@@ -4,9 +4,9 @@
 
 **Версия: v5.5** · 1cv8.exe x86 · MSVC 2022 · Python-инжектор
 
-| Референс (1C:EDT) | Результат (v5.4) |
+| Референс (1C:EDT) | Результат (v5.5) |
 |---|---|
-| ![reference](screenshots/reference.png) | ![after30_v54](screenshots/after30_v54.png) |
+| ![reference](screenshots/reference.png) | ![verify_dark_v55](screenshots/verify_dark_v55_repaint.png) |
 
 ## Принцип работы
 
@@ -36,10 +36,13 @@
 | **v5.1** | Pale-tint классификация | Жёлтая шапка F1 исправлена |
 | **v5.2–5.3** | Ring-history suppression дублей (cairo + GDI) | Emboss и синтетический bold пропускаются |
 | **v5.4** | Режим SKIP-ONLY, удалены redraw/surf-remap | Устранено отравление кэш-поверхностей |
+| **v5.5** | Watcher-автоинжекция + урок ранней инжекции | Тема применяется сама, безопасно (см. ниже) |
+
+> ⚠️ **Урок v5.5 (2026-07-24):** инжектировать тему в стартующий процесс 1С НЕЛЬЗЯ — хуки перекрашивают текст в момент построения стартовых кэшей отрисовки, перекрашенные прогоны запекаются в кэш и двоение переживает даже полную выгрузку DLL. Инвариант SKIP-ONLY дополнен: хуки не должны работать **в момент создания кэша**. Watcher ждёт окно «Конфигуратор» + 25 с и только потом инжектит. Проверено живьём: тёмная чёткая, выгрузка чистая (`verify_dark_v55_repaint.png`, `verify_light_unloaded.png`).
 
 ## Дорожная карта
 
-1. **Watcher-автоинжекция** — фоновый скрипт, который сам применяет тему к каждому запущенному 1cv8.exe. (IFEO-вариант проверен и заблокирован: 0xc0000142, см. PROJECT_DOCS.md §8а, гипотеза C.)
+1. ~~Watcher-автоинжекция~~ — ✅ **сделано (v5.5)**: `tools/theme_watcher.py` применяет тему к каждому 1cv8.exe автоматически (после появления окна «Конфигуратор» + 25 с; ранняя инжекция запрещена — см. урок выше). Автозапуск: `tools/watcher_install.bat`.
 2. Перерисовка без ресайза окна (InvalidateRect / WM_SETTINGCHANGE).
 3. Проверка диалогов и форм объектов, дополнение карты цветов.
 4. JSON-профили тем (Dracula / One Dark / Monokai / custom).
@@ -50,19 +53,26 @@
 ## Структура репозитория
 
 ```
-src/          исходники (ThemeHook3.cpp v5.4, PaletteLog.cpp)
+src/          исходники (ThemeHook3.cpp v5.5, PaletteLog.cpp, ThemeLoader.cpp — архив IFEO)
 build/        build-скрипты (MSVC 2022, x86) — запускать из этой папки
-builds/       собранные DLL (ThemeHook3_v50…v54.dll и др.)
-tools/        inject.py / unload.py / screenshot.py и др.
+builds/       собранные DLL (ThemeHook3_v50…v55.dll и др.)
+tools/        inject.py / unload.py / screenshot.py / theme_watcher.py и др.
 docs/         PROJECT_DOCS.md (полная документация), TODO.md
-screenshots/  reference.png (цель EDT), after30_v54.png (результат)
+screenshots/  reference.png (цель EDT), verify_dark_v55_repaint.png (результат)
 ```
 
 ## Использование
 
+Автоматически (рекомендуется):
 ```bat
-build/build_v54.bat                          :: сборка (x86 Native Tools, MSVC 2022)
-python tools/inject.py --dll builds\ThemeHook3_v54.dll   :: применить тему к запущенному 1cv8.exe
+tools/watcher_install.bat    :: watcher в автозагрузку; тема сама применяется к каждому 1cv8.exe
+```
+
+Вручную:
+```bat
+build/build_v55.bat                          :: сборка (x86 Native Tools, MSVC 2022)
+python tools/inject.py --dll builds\ThemeHook3_v55.dll   :: применить тему к запущенному 1cv8.exe
+:: ⚠️ инжектировать только в полностью загрузившийся конфигуратор (окно открыто, ~30 с после старта)
 :: потянуть окно конфигуратора за угол — триггер перерисовки
-python tools/unload.py                       :: выгрузить тему (процесс выживает)
+python tools/unload.py --module ThemeHook3_v55.dll       :: выгрузить тему (процесс выживает)
 ```

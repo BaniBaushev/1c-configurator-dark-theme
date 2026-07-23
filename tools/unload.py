@@ -54,7 +54,7 @@ def find_module(pid, name):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--module", default="ThemeHook.dll")
+    ap.add_argument("--module", default="ThemeHook3_v55.dll")
     ap.add_argument("--pid", type=int, default=None)
     a = ap.parse_args()
     pid = a.pid or inject.find_pid()
