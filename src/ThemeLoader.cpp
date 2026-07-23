@@ -12,18 +12,31 @@
 //   VerifierDllInitialize / VerifierDllUninitialize
 #include <windows.h>
 
-// Путь к актуальной DLL темы. При смене версии правится здесь (или ребилд
-// из build\build_loader.bat, который подставляет путь).
-static const WCHAR kThemeDllPath[] =
-    L"D:\\1CTheme\\Настройка темы в конфигураторе 1С\\builds\\ThemeHook3_v55.dll";
+// Путь к DLL темы вычисляется относительно расположения самого ThemeLoader.dll:
+// тема ищется рядом с загрузчиком (обе лежат в builds/). Работает у любого
+// пользователя после клонирования репозитория, без правки исходника.
+static HMODULE g_self = NULL;
+
+static void GetThemeDllPath(WCHAR* out, DWORD cap)
+{
+    DWORD n = GetModuleFileNameW(g_self, out, cap);
+    if (n == 0 || n >= cap) { out[0] = 0; return; }
+    WCHAR* sl = out;
+    for (WCHAR* p = out; *p; ++p) if (*p == L'\\') sl = p;
+    lstrcpynW(sl + 1, L"ThemeHook3_v55.dll", (DWORD)(cap - (sl + 1 - out)));
+}
 
 extern "C" __declspec(dllexport) BOOL WINAPI VerifierDllInitialize(DWORD dwReason)
 {
     (void)dwReason;
-    HMODULE h = LoadLibraryW(kThemeDllPath);
-    // TRUE в любом случае: даже если тема не найдена/не загрузилась,
-    // конфигуратор обязан запуститься (тема - опция, не блокер).
-    (void)h;
+    WCHAR path[MAX_PATH];
+    GetThemeDllPath(path, MAX_PATH);
+    if (path[0]) {
+        HMODULE h = LoadLibraryW(path);
+        // TRUE в любом случае: даже если тема не найдена/не загрузилась,
+        // конфигуратор обязан запуститься (тема - опция, не блокер).
+        (void)h;
+    }
     return TRUE;
 }
 
@@ -31,7 +44,8 @@ extern "C" __declspec(dllexport) VOID WINAPI VerifierDllUninitialize(VOID)
 {
 }
 
-BOOL WINAPI DllMain(HINSTANCE, DWORD, LPVOID)
+BOOL WINAPI DllMain(HINSTANCE h, DWORD reason, LPVOID)
 {
+    if (reason == DLL_PROCESS_ATTACH) g_self = (HMODULE)h;  // только запоминаем handle
     return TRUE;  // никакой работы в раннем контексте
 }
