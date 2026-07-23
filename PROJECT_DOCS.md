@@ -2,7 +2,6 @@
 
 > Обновлено: 2026-07-22 (ночь)
 > Статус: **рабочая тёмная тема v5.4** (`ThemeHook3_v54.dll`) — EAT-хуки + skip-only ring suppression; живая проверка v5.0–v5.4 пройдена (`after26_v50.png` … `after30_v54.png`), выгрузка чистая
-> Исходное техрезюме: `1c_dark_theme_summary.md`
 
 ---
 
@@ -205,5 +204,4 @@ python inject.py --dll ThemeHook3.dll
 | `reference.png` | Целевой референс (EDT Dark) |
 | `before.png`…`after30_v54.png`, `issue_*.png` | Доказательства и баг-репорты (скриншоты) |
 | `themehook_v3_log.txt` | Лог хуков (~8 МБ): `EAT 1` по всем хукам, ghost-fix, чистые выгрузки v5.2–v5.4 со счётчиками |
-| `1c_dark_theme_summary.md` | Исходное техрезюме (подходы, MVP-план) |
 | `TODO.md` | Актуальный список задач |
