@@ -1,0 +1,216 @@
+=== ThemeHook loaded (x86) at Tue Jul 21 02:12:13 2026
+[init] process=925388
+[hook] user32.dll!FillRect (bg-fill): patched 11 IAT entries
+[hook] gdi32.dll!SetBkColor (bg-color): patched 11 IAT entries
+[hook] gdi32.dll!SetTextColor (fg-color): patched 12 IAT entries
+[hook] gdi32.dll!CreateSolidBrush (brush): patched 10 IAT entries
+[hook] gdi32.dll!ExtTextOutW (text): patched 11 IAT entries
+[init] hooking done
+=== ThemeHook loaded (x86) at Tue Jul 21 02:13:32 2026
+[init] process=919872
+[hook] user32.dll!FillRect (bg-fill): patched 4 IAT entries
+[hook] gdi32.dll!SetBkColor (bg-color): patched 5 IAT entries
+[hook] gdi32.dll!SetTextColor (fg-color): patched 6 IAT entries
+[hook] gdi32.dll!CreateSolidBrush (brush): patched 6 IAT entries
+[hook] gdi32.dll!ExtTextOutW (text): patched 6 IAT entries
+[init] hooking done
+[ExtTextOutW #1] opt=4100 len=1
+[ExtTextOutW #2] opt=16 len=4
+[SetTextColor #2] 000000 -> LIGHT_FG
+[ExtTextOutW #3] opt=4100 len=1
+[ExtTextOutW #4] opt=16 len=6
+[SetTextColor #4] 000000 -> LIGHT_FG
+[ExtTextOutW #5] opt=4100 len=1
+[ExtTextOutW #6] opt=16 len=6
+[SetTextColor #6] 000000 -> LIGHT_FG
+[ExtTextOutW #7] opt=4100 len=1
+[ExtTextOutW #8] opt=16 len=3
+[SetTextColor #8] 000000 -> LIGHT_FG
+[ExtTextOutW #9] opt=4100 len=1
+[ExtTextOutW #10] opt=16 len=7
+[SetTextColor #10] 000000 -> LIGHT_FG
+[SetBkColor #1] F0F0F0 -> DARK_BG
+[ExtTextOutW #11] opt=2 len=0
+[ExtTextOutW #12] opt=18 len=0
+[SetBkColor #2] F0F0F0 -> DARK_BG
+[SetBkColor #3] FFFFFF -> DARK_BG
+[SetBkColor #4] FFFFFF -> DARK_BG
+[SetBkColor #5] FFFFFF -> DARK_BG
+[SetTextColor #13] 000000 -> LIGHT_FG
+[SetBkColor #6] FFFFFF -> DARK_BG
+[SetBkColor #7] FFFFFF -> DARK_BG
+[SetBkColor #8] FFFFFF -> DARK_BG
+[SetTextColor #16] 000000 -> LIGHT_FG
+[CreateSolidBrush #1] F0F0F0 -> DARK_BG
+[SetBkColor #9] FFFFFF -> DARK_BG
+[SetTextColor #17] 000000 -> LIGHT_FG
+[FillRect #2] solid FFFFFF -> DARK_BG
+[SetBkColor #10] FFFFFF -> DARK_BG
+[SetTextColor #18] 000000 -> LIGHT_FG
+[ExtTextOutW #13] opt=2 len=0
+[ExtTextOutW #14] opt=18 len=0
+[SetTextColor #19] 000000 -> LIGHT_FG
+[ExtTextOutW #15] opt=4100 len=1
+[ExtTextOutW #16] opt=16 len=4
+[SetTextColor #20] 000000 -> LIGHT_FG
+[SetTextColor #21] 000000 -> LIGHT_FG
+[ExtTextOutW #17] opt=4100 len=1
+[ExtTextOutW #18] opt=16 len=6
+[SetTextColor #22] 000000 -> LIGHT_FG
+[SetTextColor #23] 000000 -> LIGHT_FG
+[ExtTextOutW #19] opt=4100 len=1
+[ExtTextOutW #20] opt=16 len=6
+[SetTextColor #24] 000000 -> LIGHT_FG
+[SetTextColor #25] 000000 -> LIGHT_FG
+[ExtTextOutW #21] opt=4100 len=1
+[ExtTextOutW #22] opt=16 len=3
+[SetTextColor #26] 000000 -> LIGHT_FG
+[SetTextColor #27] 000000 -> LIGHT_FG
+[ExtTextOutW #23] opt=4100 len=1
+[ExtTextOutW #24] opt=16 len=7
+[SetTextColor #28] 000000 -> LIGHT_FG
+[SetBkColor #11] F0F0F0 -> DARK_BG
+[ExtTextOutW #25] opt=2 len=0
+[ExtTextOutW #26] opt=18 len=0
+[SetBkColor #12] F0F0F0 -> DARK_BG
+[SetBkColor #13] FFFFFF -> DARK_BG
+[SetBkColor #14] FFFFFF -> DARK_BG
+[SetBkColor #15] FFFFFF -> DARK_BG
+[SetBkColor #16] FFFFFF -> DARK_BG
+[SetBkColor #17] FFFFFF -> DARK_BG
+[SetBkColor #18] FFFFFF -> DARK_BG
+[CreateSolidBrush #3] F0F0F0 -> DARK_BG
+[SetBkColor #19] FFFFFF -> DARK_BG
+[FillRect #4] solid FFFFFF -> DARK_BG
+[SetBkColor #20] FFFFFF -> DARK_BG
+[FillRect #5] solid FFFFFF -> DARK_BG
+[SetBkColor #21] FFFFFF -> DARK_BG
+[ExtTextOutW #27] opt=2 len=0
+[ExtTextOutW #28] opt=18 len=0
+[SetBkColor #22] FFFFFF -> DARK_BG
+[SetBkColor #23] FFFFFF -> DARK_BG
+[SetBkColor #24] FFFFFF -> DARK_BG
+[SetBkColor #25] FFFFFF -> DARK_BG
+[SetBkColor #26] FFFFFF -> DARK_BG
+[SetBkColor #27] FFFFFF -> DARK_BG
+[CreateSolidBrush #6] F0F0F0 -> DARK_BG
+[SetBkColor #28] FFFFFF -> DARK_BG
+[SetBkColor #29] FFFFFF -> DARK_BG
+[SetBkColor #30] FFFFFF -> DARK_BG
+[CreateSolidBrush #7] F0F0F0 -> DARK_BG
+[ExtTextOutW #29] opt=4100 len=1
+[ExtTextOutW #30] opt=16 len=3
+[CreateSolidBrush #8] F0F0F0 -> DARK_BG
+[FillRect #9] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #10] F0F0F0 -> DARK_BG
+[FillRect #11] solid FFFFFF -> DARK_BG
+[FillRect #12] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #13] F0F0F0 -> DARK_BG
+[CreateSolidBrush #14] F0F0F0 -> DARK_BG
+[CreateSolidBrush #15] F0F0F0 -> DARK_BG
+[FillRect #16] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #17] F0F0F0 -> DARK_BG
+[FillRect #18] solid FFFFFF -> DARK_BG
+[FillRect #19] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #20] F0F0F0 -> DARK_BG
+[CreateSolidBrush #21] F0F0F0 -> DARK_BG
+[CreateSolidBrush #22] F0F0F0 -> DARK_BG
+[FillRect #23] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #24] F0F0F0 -> DARK_BG
+[FillRect #25] solid FFFFFF -> DARK_BG
+[FillRect #26] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #27] F0F0F0 -> DARK_BG
+[CreateSolidBrush #28] F0F0F0 -> DARK_BG
+[CreateSolidBrush #29] F0F0F0 -> DARK_BG
+[FillRect #30] solid FFFFFF -> DARK_BG
+[CreateSolidBrush #1] FFFFFF -> DARK_BG
+[SetTextColor #1] 000000 -> LIGHT_FG
+[ExtTextOutW #1] opt=16 len=1
+[CreateSolidBrush #2] FFFFFF -> DARK_BG
+[SetTextColor #2] 000000 -> LIGHT_FG
+[ExtTextOutW #2] opt=16 len=1
+[CreateSolidBrush #3] FFFFFF -> DARK_BG
+[SetTextColor #3] 000000 -> LIGHT_FG
+[ExtTextOutW #3] opt=16 len=1
+[CreateSolidBrush #4] FFFFFF -> DARK_BG
+[SetTextColor #4] 000000 -> LIGHT_FG
+[ExtTextOutW #4] opt=16 len=1
+[CreateSolidBrush #5] FFFFFF -> DARK_BG
+[SetTextColor #5] 000000 -> LIGHT_FG
+[ExtTextOutW #5] opt=16 len=1
+[CreateSolidBrush #6] FFFFFF -> DARK_BG
+[SetTextColor #6] 000000 -> LIGHT_FG
+[ExtTextOutW #6] opt=16 len=1
+[CreateSolidBrush #7] FFFFFF -> DARK_BG
+[SetTextColor #7] 000000 -> LIGHT_FG
+[ExtTextOutW #7] opt=16 len=1
+[CreateSolidBrush #8] FFFFFF -> DARK_BG
+[SetTextColor #8] 000000 -> LIGHT_FG
+[ExtTextOutW #8] opt=16 len=1
+[CreateSolidBrush #9] FFFFFF -> DARK_BG
+[SetTextColor #9] 000000 -> LIGHT_FG
+[ExtTextOutW #9] opt=16 len=1
+[CreateSolidBrush #10] FFFFFF -> DARK_BG
+[SetTextColor #10] 000000 -> LIGHT_FG
+[ExtTextOutW #10] opt=16 len=1
+[CreateSolidBrush #11] FFFFFF -> DARK_BG
+[SetTextColor #11] 000000 -> LIGHT_FG
+[ExtTextOutW #11] opt=16 len=1
+[CreateSolidBrush #12] FFFFFF -> DARK_BG
+[SetTextColor #12] 000000 -> LIGHT_FG
+[ExtTextOutW #12] opt=16 len=1
+[CreateSolidBrush #13] FFFFFF -> DARK_BG
+[SetTextColor #13] 000000 -> LIGHT_FG
+[ExtTextOutW #13] opt=16 len=1
+[CreateSolidBrush #14] FFFFFF -> DARK_BG
+[SetTextColor #14] 000000 -> LIGHT_FG
+[ExtTextOutW #14] opt=16 len=1
+[CreateSolidBrush #15] FFFFFF -> DARK_BG
+[SetTextColor #15] 000000 -> LIGHT_FG
+[ExtTextOutW #15] opt=16 len=1
+[CreateSolidBrush #16] FFFFFF -> DARK_BG
+[SetTextColor #16] 000000 -> LIGHT_FG
+[ExtTextOutW #16] opt=16 len=1
+[CreateSolidBrush #17] FFFFFF -> DARK_BG
+[SetTextColor #17] 000000 -> LIGHT_FG
+[ExtTextOutW #17] opt=16 len=1
+[CreateSolidBrush #18] FFFFFF -> DARK_BG
+[SetTextColor #18] 000000 -> LIGHT_FG
+[ExtTextOutW #18] opt=16 len=1
+[CreateSolidBrush #19] FFFFFF -> DARK_BG
+[SetTextColor #19] 000000 -> LIGHT_FG
+[ExtTextOutW #19] opt=16 len=1
+[CreateSolidBrush #20] FFFFFF -> DARK_BG
+[SetTextColor #20] 000000 -> LIGHT_FG
+[ExtTextOutW #20] opt=16 len=1
+[CreateSolidBrush #21] FFFFFF -> DARK_BG
+[SetTextColor #21] 000000 -> LIGHT_FG
+[ExtTextOutW #21] opt=16 len=1
+[CreateSolidBrush #22] FFFFFF -> DARK_BG
+[SetTextColor #22] 000000 -> LIGHT_FG
+[ExtTextOutW #22] opt=16 len=1
+[CreateSolidBrush #23] FFFFFF -> DARK_BG
+[SetTextColor #23] 000000 -> LIGHT_FG
+[ExtTextOutW #23] opt=16 len=1
+[CreateSolidBrush #24] FFFFFF -> DARK_BG
+[SetTextColor #24] 000000 -> LIGHT_FG
+[ExtTextOutW #24] opt=16 len=1
+[CreateSolidBrush #25] FFFFFF -> DARK_BG
+[SetTextColor #25] 000000 -> LIGHT_FG
+[ExtTextOutW #25] opt=16 len=1
+[CreateSolidBrush #26] FFFFFF -> DARK_BG
+[SetTextColor #26] 000000 -> LIGHT_FG
+[ExtTextOutW #26] opt=16 len=1
+[CreateSolidBrush #27] FFFFFF -> DARK_BG
+[SetTextColor #27] 000000 -> LIGHT_FG
+[ExtTextOutW #27] opt=16 len=1
+[CreateSolidBrush #28] FFFFFF -> DARK_BG
+[SetTextColor #28] 000000 -> LIGHT_FG
+[ExtTextOutW #28] opt=16 len=1
+[CreateSolidBrush #29] FFFFFF -> DARK_BG
+[SetTextColor #29] 000000 -> LIGHT_FG
+[ExtTextOutW #29] opt=16 len=1
+[CreateSolidBrush #30] FFFFFF -> DARK_BG
+[SetTextColor #30] 000000 -> LIGHT_FG
+[ExtTextOutW #30] opt=16 len=1
+=== ThemeHook unloaded. FillRect=42 SetBkColor=0 SetTextColor=42 CreateSolidBrush=42 ExtTextOutW=42

@@ -1,0 +1,80 @@
+[
+  {
+    "pid": 925388,
+    "hwnd": 28249026,
+    "class": "V8ToolTipWindow",
+    "text": "",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": false
+  },
+  {
+    "pid": 925388,
+    "hwnd": 37882772,
+    "class": "V8Window0.0",
+    "text": "",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": false
+  },
+  {
+    "pid": 925388,
+    "hwnd": 1115894,
+    "class": "V8Window0.da909e5",
+    "text": "Конфигуратор - Конфигурация",
+    "rect": [
+      -8,
+      -8,
+      2576,
+      1416
+    ],
+    "visible": true
+  },
+  {
+    "pid": 925388,
+    "hwnd": 10422942,
+    "class": "V8EMSGServer",
+    "text": "",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": false
+  },
+  {
+    "pid": 925388,
+    "hwnd": 10551498,
+    "class": "MSCTFIME UI",
+    "text": "MSCTFIME UI",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": false
+  },
+  {
+    "pid": 925388,
+    "hwnd": 55446424,
+    "class": "IME",
+    "text": "Default IME",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": false
+  }
+]

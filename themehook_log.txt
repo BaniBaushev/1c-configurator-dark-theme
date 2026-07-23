@@ -1,0 +1,266 @@
+=== ThemeHook loaded (x86) at Tue Jul 21 02:19:54 2026
+[init] process=925388
+[hook] user32.dll!FillRect (bg-fill): patched 11 IAT entries
+[hook] gdi32.dll!SetBkColor (bg-color): patched 11 IAT entries
+[hook] gdi32.dll!SetTextColor (fg-color): patched 12 IAT entries
+[hook] gdi32.dll!CreateSolidBrush (brush): patched 10 IAT entries
+[hook] gdi32.dll!ExtTextOutW (text): patched 11 IAT entries
+[hook] cairo.dll!cairo_set_source_rgb (cairo-fill): patched 2 IAT entries
+[hook] cairo.dll!cairo_set_source_rgba (cairo-filla): patched 2 IAT entries
+[hook] user32.dll!GetSysColor (syscolor): patched 23 IAT entries
+[hook] user32.dll!GetSysColorBrush (sysbrush): patched 6 IAT entries
+[init] hooking done
+[cairo_rgb #1] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #2] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #3] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #4] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #5] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #6] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #7] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #8] 0.00 0.00 0.00 -> LIGHT
+[GetSysColor #3] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #4] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #5] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #6] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #7] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #8] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #9] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #10] idx=28 F2E4D7 -> 1E1E1E
+[cairo_rgb #9] 0.96 0.95 0.87 -> DARK
+[cairo_rgb #10] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #11] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #12] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #13] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #14] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #15] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #16] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #17] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #18] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #19] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #20] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #21] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #22] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #23] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #24] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #25] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #26] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #27] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #28] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #29] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #30] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgba #1] 1.00 1.00 1.00 a=1.00 -> DARK
+[cairo_rgba #3] 1.00 1.00 1.00 a=1.00 -> DARK
+[cairo_rgba #5] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #6] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #7] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #8] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #9] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #10] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #11] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #12] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #13] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #14] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #15] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #16] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #17] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #18] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #19] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #20] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #21] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #22] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #23] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #24] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #25] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #26] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #27] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #28] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #29] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #30] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[CreateSolidBrush #1] FFFFFF -> DARK_BG
+=== ThemeHook loaded (x86) at Tue Jul 21 02:21:08 2026
+[init] process=921540
+[hook] user32.dll!FillRect (bg-fill): patched 11 IAT entries
+[hook] gdi32.dll!SetBkColor (bg-color): patched 11 IAT entries
+[hook] gdi32.dll!SetTextColor (fg-color): patched 12 IAT entries
+[hook] gdi32.dll!CreateSolidBrush (brush): patched 10 IAT entries
+[hook] gdi32.dll!ExtTextOutW (text): patched 11 IAT entries
+[hook] cairo.dll!cairo_set_source_rgb (cairo-fill): patched 2 IAT entries
+[hook] cairo.dll!cairo_set_source_rgba (cairo-filla): patched 2 IAT entries
+[hook] user32.dll!GetSysColor (syscolor): patched 23 IAT entries
+[hook] user32.dll!GetSysColorBrush (sysbrush): patched 6 IAT entries
+[init] hooking done
+[cairo_rgb #1] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #2] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #3] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #4] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #5] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #6] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #7] 0.70 0.70 0.70 -> DARK
+[cairo_rgb #8] 0.00 0.00 0.00 -> LIGHT
+[GetSysColor #3] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #4] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #5] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #6] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #7] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #8] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #9] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #10] idx=28 F2E4D7 -> 1E1E1E
+[cairo_rgb #9] 0.96 0.95 0.87 -> DARK
+[cairo_rgba #1] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #2] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #3] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #4] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #5] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #6] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #7] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #8] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #9] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #10] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #11] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #12] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #13] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #14] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #15] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #16] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #17] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgb #10] 0.96 0.95 0.87 -> DARK
+[cairo_rgb #11] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #12] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #13] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #14] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #15] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #16] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #17] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #18] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #19] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #20] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #21] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #22] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #23] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #24] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #25] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #26] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #27] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #28] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #29] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgb #30] 0.00 0.00 0.00 -> LIGHT
+[cairo_rgba #18] 1.00 1.00 1.00 a=1.00 -> DARK
+[cairo_rgba #20] 1.00 1.00 1.00 a=1.00 -> DARK
+[cairo_rgba #22] 0.25 0.19 0.01 a=1.00 -> LIGHT
+[cairo_rgba #23] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #24] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #25] 0.00 0.00 0.00 a=1.00 -> LIGHT
+[cairo_rgba #26] 0.95 0.95 0.95 a=1.00 -> DARK
+[cairo_rgba #28] 0.70 0.70 0.70 a=1.00 -> DARK
+[GetSysColor #13] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #14] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #15] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #16] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #17] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #18] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #19] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #20] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #23] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #24] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #25] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #26] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #27] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #28] idx=28 F2E4D7 -> 1E1E1E
+[GetSysColor #29] idx=3 DBCDBF -> 1E1E1E
+[GetSysColor #30] idx=28 F2E4D7 -> 1E1E1E
+[CreateSolidBrush #1] FFFFFF -> DARK_BG
+[SetTextColor #1] 000000 -> LIGHT_FG
+[ExtTextOutW #1] opt=16 len=1
+[CreateSolidBrush #2] FFFFFF -> DARK_BG
+[SetTextColor #2] 000000 -> LIGHT_FG
+[ExtTextOutW #2] opt=16 len=1
+[CreateSolidBrush #3] FFFFFF -> DARK_BG
+[SetTextColor #3] 000000 -> LIGHT_FG
+[ExtTextOutW #3] opt=16 len=1
+[CreateSolidBrush #4] FFFFFF -> DARK_BG
+[SetTextColor #4] 000000 -> LIGHT_FG
+[ExtTextOutW #4] opt=16 len=1
+[CreateSolidBrush #5] FFFFFF -> DARK_BG
+[SetTextColor #5] 000000 -> LIGHT_FG
+[ExtTextOutW #5] opt=16 len=1
+[CreateSolidBrush #6] FFFFFF -> DARK_BG
+[SetTextColor #6] 000000 -> LIGHT_FG
+[ExtTextOutW #6] opt=16 len=1
+[CreateSolidBrush #7] FFFFFF -> DARK_BG
+[SetTextColor #7] 000000 -> LIGHT_FG
+[ExtTextOutW #7] opt=16 len=1
+[CreateSolidBrush #8] FFFFFF -> DARK_BG
+[SetTextColor #8] 000000 -> LIGHT_FG
+[ExtTextOutW #8] opt=16 len=1
+[CreateSolidBrush #9] FFFFFF -> DARK_BG
+[SetTextColor #9] 000000 -> LIGHT_FG
+[ExtTextOutW #9] opt=16 len=1
+[CreateSolidBrush #10] FFFFFF -> DARK_BG
+[SetTextColor #10] 000000 -> LIGHT_FG
+[ExtTextOutW #10] opt=16 len=1
+[CreateSolidBrush #11] FFFFFF -> DARK_BG
+[SetTextColor #11] 000000 -> LIGHT_FG
+[ExtTextOutW #11] opt=16 len=1
+[CreateSolidBrush #12] FFFFFF -> DARK_BG
+[SetTextColor #12] 000000 -> LIGHT_FG
+[ExtTextOutW #12] opt=16 len=1
+[CreateSolidBrush #13] FFFFFF -> DARK_BG
+[SetTextColor #13] 000000 -> LIGHT_FG
+[ExtTextOutW #13] opt=16 len=1
+[CreateSolidBrush #14] FFFFFF -> DARK_BG
+[SetTextColor #14] 000000 -> LIGHT_FG
+[ExtTextOutW #14] opt=16 len=1
+[CreateSolidBrush #15] FFFFFF -> DARK_BG
+[SetTextColor #15] 000000 -> LIGHT_FG
+[ExtTextOutW #15] opt=16 len=1
+[CreateSolidBrush #16] FFFFFF -> DARK_BG
+[SetTextColor #16] 000000 -> LIGHT_FG
+[ExtTextOutW #16] opt=16 len=1
+[CreateSolidBrush #17] FFFFFF -> DARK_BG
+[SetTextColor #17] 000000 -> LIGHT_FG
+[ExtTextOutW #17] opt=16 len=1
+[CreateSolidBrush #18] FFFFFF -> DARK_BG
+[SetTextColor #18] 000000 -> LIGHT_FG
+[ExtTextOutW #18] opt=16 len=1
+[CreateSolidBrush #19] FFFFFF -> DARK_BG
+[SetTextColor #19] 000000 -> LIGHT_FG
+[ExtTextOutW #19] opt=16 len=1
+[CreateSolidBrush #20] FFFFFF -> DARK_BG
+[SetTextColor #20] 000000 -> LIGHT_FG
+[ExtTextOutW #20] opt=16 len=1
+[CreateSolidBrush #21] FFFFFF -> DARK_BG
+[SetTextColor #21] 000000 -> LIGHT_FG
+[ExtTextOutW #21] opt=16 len=1
+[CreateSolidBrush #22] FFFFFF -> DARK_BG
+[SetTextColor #22] 000000 -> LIGHT_FG
+[ExtTextOutW #22] opt=16 len=1
+[CreateSolidBrush #23] FFFFFF -> DARK_BG
+[SetTextColor #23] 000000 -> LIGHT_FG
+[ExtTextOutW #23] opt=16 len=1
+[CreateSolidBrush #24] FFFFFF -> DARK_BG
+[SetTextColor #24] 000000 -> LIGHT_FG
+[ExtTextOutW #24] opt=16 len=1
+[CreateSolidBrush #25] FFFFFF -> DARK_BG
+[SetTextColor #25] 000000 -> LIGHT_FG
+[ExtTextOutW #25] opt=16 len=1
+[CreateSolidBrush #26] FFFFFF -> DARK_BG
+[SetTextColor #26] 000000 -> LIGHT_FG
+[ExtTextOutW #26] opt=16 len=1
+[CreateSolidBrush #27] FFFFFF -> DARK_BG
+[SetTextColor #27] 000000 -> LIGHT_FG
+[ExtTextOutW #27] opt=16 len=1
+[CreateSolidBrush #28] FFFFFF -> DARK_BG
+[SetTextColor #28] 000000 -> LIGHT_FG
+[ExtTextOutW #28] opt=16 len=1
+[CreateSolidBrush #29] FFFFFF -> DARK_BG
+[SetTextColor #29] 000000 -> LIGHT_FG
+[ExtTextOutW #29] opt=16 len=1
+[CreateSolidBrush #30] FFFFFF -> DARK_BG
+[SetTextColor #30] 000000 -> LIGHT_FG
+[ExtTextOutW #30] opt=16 len=1
+[SetBkColor #1] FFFFFF -> DARK_BG
+[SetBkColor #2] FFFFFF -> DARK_BG
+[SetBkColor #3] FFFFFF -> DARK_BG
+[SetBkColor #5] FFFFFF -> DARK_BG
+[SetBkColor #7] FFFFFF -> DARK_BG
+=== ThemeHook unloaded. FillRect=92 SetBkColor=8 SetTextColor=100 CreateSolidBrush=92 ExtTextOutW=92 CairoRgb=14111 CairoRgba=4565 GetSysColor=360 GetSysColorBrush=0
