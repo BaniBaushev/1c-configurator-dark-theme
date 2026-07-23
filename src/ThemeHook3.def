@@ -1,0 +1,4 @@
+LIBRARY ThemeHook3
+EXPORTS
+    VerifierDllInitialize
+    VerifierDllUninitialize

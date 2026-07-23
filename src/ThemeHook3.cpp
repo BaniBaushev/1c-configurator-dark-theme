@@ -1,10 +1,12 @@
-// ThemeHook3.dll - v5.4: EAT hooks + skip-only ring suppression + pale-tint fix
+// ThemeHook3.dll - v5.5: EAT hooks + skip-only ring suppression + IFEO autoload
 // - v5.0: EAT patch of provider dlls (cairo/gdi32/user32) -> late modules hooked instantly
 // - v5.1: pale tints (min ch > 0.55) are backgrounds, not accents (F1 yellow banner fixed)
 // - v5.2-5.3: duplicate-pair detection via per-thread ring history (pairs are not adjacent)
 // - v5.4: HARD LESSON - any re-draw or pixel write lands in CACHED surfaces and poisons
 //         the process permanently (doubling survived even full unload). Now SKIP-ONLY:
 //         no deferred redraws, no surf-remap; unmatched dark text just recolored (safe)
+// - v5.5: VerifierDllInitialize/Uninitialize exports -> IFEO (GlobalFlag=0x100 +
+//         VerifierDlls) autoloads the theme at process start, no injector needed
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <psapi.h>
@@ -914,6 +916,16 @@ static void RestoreIAT(void)
     }
 }
 
+// ---------- v5.5: Application Verifier provider exports (IFEO autoload) ----------
+// ntdll's verifier loader (IFEO GlobalFlag=0x100 + VerifierDlls) REQUIRES these
+// exports; without them the DLL is loaded and immediately unloaded -> no hooks.
+extern "C" __declspec(dllexport) BOOL WINAPI VerifierDllInitialize(DWORD dwReason)
+{
+    (void)dwReason;  // hooks are installed in DllMain; nothing extra needed here
+    return TRUE;
+}
+extern "C" __declspec(dllexport) VOID WINAPI VerifierDllUninitialize(VOID) {}
+
 BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
 {
     if (reason == DLL_PROCESS_ATTACH) {
@@ -928,7 +940,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
             if (g_hRescan) { WaitForSingleObject(g_hRescan, 2000); CloseHandle(g_hRescan); g_hRescan = NULL; }
             RestoreIAT();
             if (g_log) {
-                Log("=== v5.4 unloaded cleanly. CairoRgb=%ld CairoRgba=%ld SetTextColor=%ld SetBkColor=%ld CreateSolidBrush=%ld FillRect=%ld GetSysColor=%ld GetSysColorBrush=%ld ShadowSkip=%ld DupSkip=%ld GdiDup=%ld\n",
+                Log("=== v5.5 unloaded cleanly. CairoRgb=%ld CairoRgba=%ld SetTextColor=%ld SetBkColor=%ld CreateSolidBrush=%ld FillRect=%ld GetSysColor=%ld GetSysColorBrush=%ld ShadowSkip=%ld DupSkip=%ld GdiDup=%ld\n",
                     nCairoRgb, nCairoRgba, nSetTextColor, nSetBkColor, nCreateSolidBrush, nFillRect, nGetSysColor, nGetSysColorBrush, nShadowSkip, nDupSkip, nGdiDup);
                 fclose(g_log);
                 g_log = NULL;

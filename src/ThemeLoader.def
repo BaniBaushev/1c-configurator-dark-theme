@@ -1,0 +1,4 @@
+LIBRARY ThemeLoader
+EXPORTS
+    VerifierDllInitialize
+    VerifierDllUninitialize
