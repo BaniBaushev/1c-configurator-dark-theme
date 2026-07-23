@@ -20,7 +20,7 @@
 
 | # | Гипотеза | Метод проверки | Вердикт |
 |---|----------|----------------|---------|
-| 1 | Редактор модулей — Scintilla, можно красить через `SCI_STYLESET*` | PoC `poc_find_editor.py`: перечисление всех окон процесса 1cv8.exe | ❌ **Опровергнута.** Scintilla нет |
+| 1 | Редактор модулей — Scintilla, можно красить через `SCI_STYLESET*` | PoC `tools/poc_find_editor.py`: перечисление всех окон процесса 1cv8.exe | ❌ **Опровергнута.** Scintilla нет |
 | 2 | UI 1С — стандартные дочерние контролы (Edit/ListView/TreeView), красить через `SetWindowSubclass` + `WM_PAINT`/`NM_CUSTOMDRAW` | Тот же PoC | ❌ **Опровергнута.** У главного окна почти нет дочерних HWND — 1С рисует всё сам (owner-draw) внутри одного окна класса `V8Window0.*` |
 | 3 | Подмена цветов через классический GDI (`FillRect`, `SetBkColor`) | PoC #2: IAT-хуки + инжектор | ⚠️ **Частично.** Хуки работают, но 1С почти не вызывает эти функции для главного UI — нулевой визуальный эффект |
 | 4 | 1С рендерит UI через **Cairo** (`grphcs.dll` → `cairo.dll`) | Логирование вызовов: `cairo_set_source_rgb/rgba` — самые частые вызовы отрисовки | ✅ **Подтверждена — ключевая находка.** Хуки на cairo покрасили весь интерфейс |
@@ -47,7 +47,7 @@
 ## 4. Архитектура решения
 
 ```
-python inject.py --dll ThemeHook3.dll
+python tools/inject.py --dll builds\ThemeHook3.dll
         │
         ▼  CreateRemoteThread → LoadLibraryW (учёт битности: RVA из SysWOW64\kernel32.dll)
 ┌──────────────────────────────────────────────┐
@@ -84,11 +84,11 @@ python inject.py --dll ThemeHook3.dll
 - `PaletteLog.dll` — сборщик реальной палитры 1С (лог всех цветов с частотами)
 - `unload.py` — безопасная выгрузка DLL (FreeLibrary + IAT-restore, процесс выживает)
 - `screenshot.py` — скриншоты окна 1cv8 через PrintWindow/GetDIBits
-- `poc_find_editor.py` — перечислитель окон/классов процесса 1С
+- `tools/poc_find_editor.py` — перечислитель окон/классов процесса 1С
 
 ---
 
-## 5. Цветовая система (тема EDT Dark, референс `reference.png`)
+## 5. Цветовая система (тема EDT Dark, референс `screenshots/reference.png`)
 
 **Целевая палитра (из референса 1C:EDT):**
 
@@ -193,15 +193,15 @@ python inject.py --dll ThemeHook3.dll
 
 | Файл | Назначение |
 |------|-----------|
-| `ThemeHook3.cpp` / `ThemeHook3.dll` | Актуальная тема **v5.4** (EAT + skip-only ring suppression + pale-tint fix) |
-| `ThemeHook3_v50.dll`…`ThemeHook3_v54.dll`, `build_v50.bat`…`build_v54.bat` | Версионные сборки v5.0–v5.4 (все прошли живую проверку) |
-| `build_v3.bat` | Сборка (MSVC 2022 Community, x86) |
-| `inject.py` / `unload.py` | Инжектор / безопасная выгрузка |
-| `PaletteLog.cpp` / `PaletteLog.dll` | Сборщик палитры 1С |
-| `screenshot.py`, `menu_shot.py` | Скриншоты окна / попытка снять popup-меню |
-| `poc_find_editor.py` | PoC перечисления окон (гипотезы 1–2) |
-| `palette_dump.txt` | Собранная палитра 1С с частотами |
-| `reference.png` | Целевой референс (EDT Dark) |
+| `src/ThemeHook3.cpp` / `builds/ThemeHook3.dll` | Актуальная тема **v5.4** (EAT + skip-only ring suppression + pale-tint fix) |
+| `builds/ThemeHook3_v50…v54.dll`, `build/build_v50…v54.bat` | Версионные сборки v5.0–v5.4 (все прошли живую проверку) |
+| `build/build_v3.bat` | Сборка (MSVC 2022 Community, x86) |
+| `tools/inject.py` / `tools/unload.py` | Инжектор / безопасная выгрузка |
+| `src/PaletteLog.cpp` / `builds/PaletteLog.dll` | Сборщик палитры 1С |
+| `tools/screenshot.py`, `tools/menu_shot.py` | Скриншоты окна / попытка снять popup-меню |
+| `tools/poc_find_editor.py` | PoC перечисления окон (гипотезы 1–2) |
+| `logs/palette_dump.txt` | Собранная палитра 1С с частотами |
+| `screenshots/reference.png` | Целевой референс (EDT Dark) |
 | `before.png`…`after30_v54.png`, `issue_*.png` | Доказательства и баг-репорты (скриншоты) |
-| `themehook_v3_log.txt` | Лог хуков (~8 МБ): `EAT 1` по всем хукам, ghost-fix, чистые выгрузки v5.2–v5.4 со счётчиками |
+| `logs/themehook_v3_log.txt` | Лог хуков (~8 МБ): `EAT 1` по всем хукам, ghost-fix, чистые выгрузки v5.2–v5.4 со счётчиками |
 | `TODO.md` | Актуальный список задач |

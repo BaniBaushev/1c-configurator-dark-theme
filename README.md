@@ -6,7 +6,7 @@
 
 | Референс (1C:EDT) | Результат (v5.4) |
 |---|---|
-| ![reference](reference.png) | ![after30_v54](after30_v54.png) |
+| ![reference](screenshots/reference.png) | ![after30_v54](screenshots/after30_v54.png) |
 
 ## Принцип работы
 
@@ -20,7 +20,7 @@
 
 Инвариант **SKIP-ONLY**: дорисовывать в cairo-контексты и править пиксели кэшированных surface нельзя — изменения запекаются в кэш 1С/WebKit и переживают выгрузку DLL. Только пропуск дублей или перекраска до отрисовки.
 
-Подробная документация — в [PROJECT_DOCS.md](PROJECT_DOCS.md).
+Подробная документация — в [PROJECT_DOCS.md](docs/PROJECT_DOCS.md).
 
 ## Что сделано (история версий)
 
@@ -45,13 +45,24 @@
 4. JSON-профили тем (Dracula / One Dark / Monokai / custom).
 5. GUI менеджера профилей (C# WPF).
 
-Актуальные задачи — [TODO.md](TODO.md).
+Актуальные задачи — [TODO.md](docs/TODO.md).
+
+## Структура репозитория
+
+```
+src/          исходники (ThemeHook3.cpp v5.4, PaletteLog.cpp)
+build/        build-скрипты (MSVC 2022, x86) — запускать из этой папки
+builds/       собранные DLL (ThemeHook3_v50…v54.dll и др.)
+tools/        inject.py / unload.py / screenshot.py и др.
+docs/         PROJECT_DOCS.md (полная документация), TODO.md
+screenshots/  reference.png (цель EDT), after30_v54.png (результат)
+```
 
 ## Использование
 
 ```bat
-build_v54.bat                          :: сборка (x86 Native Tools, MSVC 2022)
-python inject.py --dll ThemeHook3_v54.dll   :: применить тему к запущенному 1cv8.exe
+build/build_v54.bat                          :: сборка (x86 Native Tools, MSVC 2022)
+python tools/inject.py --dll builds\ThemeHook3_v54.dll   :: применить тему к запущенному 1cv8.exe
 :: потянуть окно конфигуратора за угол — триггер перерисовки
-python unload.py                       :: выгрузить тему (процесс выживает)
+python tools/unload.py                       :: выгрузить тему (процесс выживает)
 ```
