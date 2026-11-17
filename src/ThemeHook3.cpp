@@ -7,10 +7,12 @@
 //         no deferred redraws, no surf-remap; unmatched dark text just recolored (safe)
 // - v5.5: VerifierDllInitialize/Uninitialize exports -> IFEO (GlobalFlag=0x100 +
 //         VerifierDlls) autoloads the theme at process start, no injector needed
+// - v5.6: x86 и x64 из этого файла. На x64 EAT — стаб в [base, base + 4 ГБ) провайдера.
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <psapi.h>
 #include <stdio.h>
+#include <stddef.h>
 #include <math.h>
 #include <time.h>
 
@@ -19,9 +21,15 @@ static HMODULE g_hModule = NULL;
 static CRITICAL_SECTION g_cs;
 static FILE* g_log = NULL;
 
-// ---------- IAT patch bookkeeping for clean unload ----------
+// ---------- журнал патчей: на x64 IAT — 8 байт, EAT — 4 байта ----------
 #define MAX_PATCHES 4096
-typedef struct { void** slot; void* orig; } PatchRec;
+typedef struct {
+    void* slot;
+    void* orig;
+#ifdef _WIN64
+    DWORD width;
+#endif
+} PatchRec;
 static PatchRec g_patches[MAX_PATCHES];
 static int g_nPatches = 0;
 
@@ -256,14 +264,19 @@ static int PatchIAT(HMODULE hMod, const char* dllName, const char* fnName, void*
                 PIMAGE_IMPORT_BY_NAME ibn = (PIMAGE_IMPORT_BY_NAME)((BYTE*)hMod + orig->u1.AddressOfData);
                 if (strcmp((const char*)ibn->Name, fnName) != 0) continue;
                 if ((void*)thunk->u1.Function == newFn) { patched++; continue; }  // already hooked (re-scan safe)
+                if (g_nPatches >= MAX_PATCHES) {
+                    Log("[patch] journal full, patch refused\n");
+                    continue;
+                }
                 DWORD oldProt;
                 if (VirtualProtect(&thunk->u1.Function, sizeof(void*), PAGE_READWRITE, &oldProt)) {
                     if (pOld && !*pOld) *pOld = (void*)thunk->u1.Function;
-                    if (g_nPatches < MAX_PATCHES) {
-                        g_patches[g_nPatches].slot = (void**)&thunk->u1.Function;
-                        g_patches[g_nPatches].orig = (void*)thunk->u1.Function;
-                        g_nPatches++;
-                    }
+                    g_patches[g_nPatches].slot = (void*)&thunk->u1.Function;
+                    g_patches[g_nPatches].orig = (void*)thunk->u1.Function;
+#ifdef _WIN64
+                    g_patches[g_nPatches].width = (DWORD)sizeof(void*);
+#endif
+                    g_nPatches++;
                     thunk->u1.Function = (DWORD_PTR)newFn;
                     VirtualProtect(&thunk->u1.Function, sizeof(void*), oldProt, &oldProt);
                     patched++;
@@ -274,14 +287,139 @@ static int PatchIAT(HMODULE hMod, const char* dllName, const char* fnName, void*
     return patched;
 }
 
-// ---------- EAT patch engine (v5 hypothesis A) ----------
-// Instead of patching every module's IAT (and re-scanning for late-loaded DLLs),
-// patch the Export Address Table of the PROVIDING dll (cairo.dll / gdi32.dll / user32.dll)
-// once. Any module that resolves the import afterwards (IAT bind, delay-load,
-// GetProcAddress) automatically receives the hooked address.
-// EAT entries are RVAs relative to the exporting module base; storing an RVA that
-// points outside the module is legal (GetProcAddress just computes base+RVA),
-// which lets us point the export at our hook function in ThemeHook3.dll.
+// ---------- EAT: x86 пишет RVA напрямую; x64 — только ближний стаб ----------
+// AddressOfFunctions — беззнаковый RVA от базы провайдера. На x64 хук в ThemeHook
+// часто не попадает в [base, base + 4 ГБ), поэтому усечённый DWORD туда не пишется.
+// Стаб: jmp qword ptr [rip+0] и 8-байтный адрес цели, выровненный на 8.
+#ifdef _WIN64
+static const int kEatStubBytes = 16;
+static const int kEatStubMax = 256;
+
+typedef struct {
+    HMODULE provider;
+    BYTE* page;
+    int used;
+} EatStubPage;
+
+typedef struct {
+    volatile LONG64* slot;
+    void* orig;
+} EatStubRedirect;
+
+static EatStubPage g_stubPages[3];
+static EatStubRedirect g_stubRedirects[kEatStubMax];
+static int g_nStubRedirects = 0;
+
+static int IsEatProvider(HMODULE hMod)
+{
+    char path[MAX_PATH];
+    DWORD n = GetModuleFileNameA(hMod, path, MAX_PATH);
+    if (n == 0 || n >= MAX_PATH) return 0;
+    const char* base = strrchr(path, '\\');
+    base = base ? base + 1 : path;
+    return _stricmp(base, "cairo.dll") == 0
+        || _stricmp(base, "gdi32.dll") == 0
+        || _stricmp(base, "user32.dll") == 0;
+}
+
+static BYTE* AllocEatStubPage(HMODULE hMod)
+{
+    ULONG_PTR base = (ULONG_PTR)hMod;
+    ULONG_PTR limit = base + 0x100000000ULL;
+    ULONG_PTR addr = base;
+    MEMORY_BASIC_INFORMATION mbi;
+    while (addr < limit) {
+        if (!VirtualQuery((LPCVOID)addr, &mbi, sizeof(mbi))) break;
+        ULONG_PTR regionBase = (ULONG_PTR)mbi.BaseAddress;
+        ULONG_PTR regionEnd = regionBase + (ULONG_PTR)mbi.RegionSize;
+        if (regionEnd <= addr) break;
+        if (mbi.State == MEM_FREE) {
+            ULONG_PTR cand = (regionBase + 0xFFFFULL) & ~0xFFFFULL;
+            if (cand < base) cand = (base + 0xFFFFULL) & ~0xFFFFULL;
+            if (cand >= base && cand + 0x1000 <= regionEnd && cand + 0x1000 <= limit) {
+                BYTE* page = (BYTE*)VirtualAlloc((LPVOID)cand, 0x1000,
+                    MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+                if (page) return page;
+            }
+        }
+        addr = regionEnd;
+    }
+    return NULL;
+}
+
+static EatStubPage* EatStubPageFor(HMODULE hMod)
+{
+    int i;
+    for (i = 0; i < 3; i++) {
+        if (g_stubPages[i].provider == hMod && g_stubPages[i].page)
+            return &g_stubPages[i];
+    }
+    for (i = 0; i < 3; i++) {
+        if (!g_stubPages[i].provider) {
+            BYTE* page = AllocEatStubPage(hMod);
+            if (!page) return NULL;
+            g_stubPages[i].provider = hMod;
+            g_stubPages[i].page = page;
+            g_stubPages[i].used = 0;
+            return &g_stubPages[i];
+        }
+    }
+    return NULL;
+}
+
+static int AddrIsEatStub(HMODULE hMod, const BYTE* addr)
+{
+    int i;
+    for (i = 0; i < 3; i++) {
+        BYTE* page = g_stubPages[i].page;
+        if (g_stubPages[i].provider == hMod && page) {
+            BYTE* end = page + g_stubPages[i].used * kEatStubBytes;
+            if (addr >= page && addr < end) return 1;
+        }
+    }
+    return 0;
+}
+
+// 16 байт: два nop, jmp qword ptr [rip+0], адрес цели на смещении 8.
+static BYTE* EmitEatStub(EatStubPage* sp, void* target)
+{
+    DWORD oldProt, ign;
+    BYTE* slot;
+    if (!sp || sp->used >= (0x1000 / kEatStubBytes)) return NULL;
+    if (!VirtualProtect(sp->page, 0x1000, PAGE_READWRITE, &oldProt)) return NULL;
+    slot = sp->page + sp->used * kEatStubBytes;
+    slot[0] = 0x90;
+    slot[1] = 0x90;
+    slot[2] = 0xFF;
+    slot[3] = 0x25;
+    slot[4] = 0x00;
+    slot[5] = 0x00;
+    slot[6] = 0x00;
+    slot[7] = 0x00;
+    *(void**)(slot + 8) = target;
+    VirtualProtect(sp->page, 0x1000, PAGE_EXECUTE_READ, &ign);
+    sp->used++;
+    return slot;
+}
+
+// До отката EAT: уже выданный указатель стаба ведёт в исходный экспорт.
+// Страница не освобождается — поток, который уже вошёл в jmp, доходит до живого кода.
+static void RedirectEatStubs(void)
+{
+    int i;
+    for (i = 0; i < g_nStubRedirects; i++) {
+        DWORD oldProt, ign;
+        volatile LONG64* slot = g_stubRedirects[i].slot;
+        if (!slot) continue;
+        if (VirtualProtect((LPVOID)slot, sizeof(LONG64), PAGE_EXECUTE_READWRITE, &oldProt)) {
+            InterlockedExchange64((LONG64 volatile*)slot,
+                (LONG64)(ULONG_PTR)g_stubRedirects[i].orig);
+            VirtualProtect((LPVOID)slot, sizeof(LONG64), PAGE_EXECUTE_READ, &ign);
+        }
+    }
+}
+#endif
+
 static int PatchEAT(HMODULE hMod, const char* fnName, void* newFn, void** pOld)
 {
     if (!hMod) return 0;
@@ -301,21 +439,75 @@ static int PatchEAT(HMODULE hMod, const char* fnName, void* newFn, void** pOld)
             const char* name = (const char*)((BYTE*)hMod + names[i]);
             if (strcmp(name, fnName) != 0) continue;
             DWORD idx = ords[i];
-            DWORD newRva = (DWORD)((BYTE*)newFn - (BYTE*)hMod);
-            if (funcs[idx] == newRva) { patched++; break; }  // already EAT-hooked
-            DWORD oldProt;
-            if (VirtualProtect(&funcs[idx], sizeof(DWORD), PAGE_READWRITE, &oldProt)) {
-                // capture the true original from the EAT (most reliable source)
-                if (pOld && !*pOld) *pOld = (void*)((BYTE*)hMod + funcs[idx]);
-                if (g_nPatches < MAX_PATCHES) {
-                    g_patches[g_nPatches].slot = (void**)&funcs[idx];
-                    g_patches[g_nPatches].orig = (void*)(DWORD_PTR)funcs[idx];
-                    g_nPatches++;
+#ifdef _WIN64
+            if (!IsEatProvider(hMod)) {
+                Log("[eat] stub page unavailable, export not patched\n");
+                break;
+            }
+            if (AddrIsEatStub(hMod, (const BYTE*)hMod + funcs[idx])) { patched++; break; }
+            if (g_nPatches >= MAX_PATCHES || g_nStubRedirects >= kEatStubMax) {
+                Log("[patch] journal full, patch refused\n");
+                break;
+            }
+            {
+                EatStubPage* sp = EatStubPageFor(hMod);
+                void* origFn;
+                BYTE* stub;
+                ULONG_PTR delta;
+                DWORD newRva, oldProt;
+                if (!sp) {
+                    Log("[eat] stub page unavailable, export not patched\n");
+                    break;
                 }
+                origFn = (void*)((BYTE*)hMod + funcs[idx]);
+                stub = EmitEatStub(sp, newFn);
+                if (!stub) {
+                    Log("[eat] stub page unavailable, export not patched\n");
+                    break;
+                }
+                delta = (ULONG_PTR)(stub - (BYTE*)hMod);
+                if (stub < (BYTE*)hMod || delta > 0xFFFFFFFFULL) {
+                    sp->used--;
+                    Log("[eat] stub page unavailable, export not patched\n");
+                    break;
+                }
+                newRva = (DWORD)delta;
+                if (!VirtualProtect(&funcs[idx], sizeof(DWORD), PAGE_READWRITE, &oldProt)) {
+                    sp->used--;
+                    break;
+                }
+                if (pOld && !*pOld) *pOld = origFn;
+                g_patches[g_nPatches].slot = &funcs[idx];
+                g_patches[g_nPatches].orig = (void*)(ULONG_PTR)funcs[idx];
+                g_patches[g_nPatches].width = 4;
+                g_nPatches++;
+                g_stubRedirects[g_nStubRedirects].slot = (volatile LONG64*)(stub + 8);
+                g_stubRedirects[g_nStubRedirects].orig = origFn;
+                g_nStubRedirects++;
                 funcs[idx] = newRva;
                 VirtualProtect(&funcs[idx], sizeof(DWORD), oldProt, &oldProt);
                 patched++;
             }
+#else
+            {
+                DWORD newRva = (DWORD)((BYTE*)newFn - (BYTE*)hMod);
+                DWORD oldProt;
+                if (funcs[idx] == newRva) { patched++; break; }
+                if (g_nPatches >= MAX_PATCHES) {
+                    Log("[patch] journal full, patch refused\n");
+                    break;
+                }
+                if (VirtualProtect(&funcs[idx], sizeof(DWORD), PAGE_READWRITE, &oldProt)) {
+                    if (pOld && !*pOld) *pOld = (void*)((BYTE*)hMod + funcs[idx]);
+                    g_patches[g_nPatches].slot = &funcs[idx];
+                    g_patches[g_nPatches].orig = (void*)(DWORD_PTR)funcs[idx];
+                    g_nPatches++;
+                    funcs[idx] = newRva;
+                    VirtualProtect(&funcs[idx], sizeof(DWORD), oldProt, &oldProt);
+                    patched++;
+                }
+            }
+#endif
             break;
         }
     } __except (EXCEPTION_EXECUTE_HANDLER) {}
@@ -544,7 +736,13 @@ static void FixupTextColor(void* cr)
 //  - synthetic-bold duplicate (same glyphs+color, offset 0.25..3px): skipped;
 //  - surf-remap (in-place pixel modification of cached surfaces) DISABLED:
 //    same cache-poisoning risk class, 0 hits in v4.8+ anyway.
-typedef struct { unsigned long index; double x; double y; } CairoGlyph;  // x86 layout, 24 bytes
+// LLP64 (MSVC / MinGW-w64): unsigned long — 4 байта, double выровнен на 8.
+// Раскладка подтверждена по cairo.dll x64-платформы (Machine 0x8664, без Cygwin/MSYS).
+typedef struct { unsigned long index; double x; double y; } CairoGlyph;
+static_assert(sizeof(CairoGlyph) == 24, "CairoGlyph size");
+static_assert(offsetof(CairoGlyph, index) == 0, "CairoGlyph.index");
+static_assert(offsetof(CairoGlyph, x) == 8, "CairoGlyph.x");
+static_assert(offsetof(CairoGlyph, y) == 16, "CairoGlyph.y");
 #define LRING_SIZE 256
 typedef struct {
     int num; unsigned long idx[8];
@@ -906,12 +1104,27 @@ static void RestoreIAT(void)
 {
     for (int i = 0; i < g_nPatches; i++) {
         DWORD oldProt;
-        void** slot = g_patches[i].slot;
+        void* slot = g_patches[i].slot;
         __try {
-            if (VirtualProtect(slot, sizeof(void*), PAGE_READWRITE, &oldProt)) {
-                *slot = g_patches[i].orig;
-                VirtualProtect(slot, sizeof(void*), oldProt, &oldProt);
+#ifdef _WIN64
+            DWORD width = g_patches[i].width;
+            if (width != 4 && width != 8) continue;
+            if (VirtualProtect(slot, width, PAGE_READWRITE, &oldProt)) {
+                if (width == 4) {
+                    DWORD rva = (DWORD)(ULONG_PTR)g_patches[i].orig;
+                    *(DWORD*)slot = rva;
+                } else {
+                    ULONG_PTR ptr = (ULONG_PTR)g_patches[i].orig;
+                    *(ULONG_PTR*)slot = ptr;
+                }
+                VirtualProtect(slot, width, oldProt, &oldProt);
             }
+#else
+            if (VirtualProtect(slot, 4, PAGE_READWRITE, &oldProt)) {
+                *(void**)slot = g_patches[i].orig;
+                VirtualProtect(slot, 4, oldProt, &oldProt);
+            }
+#endif
         } __except (EXCEPTION_EXECUTE_HANDLER) {}
     }
 }
@@ -938,9 +1151,12 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
         if (reserved == NULL) {  // FreeLibrary: restore IAT so no dangling pointers remain
             g_stopRescan = 1;
             if (g_hRescan) { WaitForSingleObject(g_hRescan, 2000); CloseHandle(g_hRescan); g_hRescan = NULL; }
+#ifdef _WIN64
+            RedirectEatStubs();
+#endif
             RestoreIAT();
             if (g_log) {
-                Log("=== v5.5 unloaded cleanly. CairoRgb=%ld CairoRgba=%ld SetTextColor=%ld SetBkColor=%ld CreateSolidBrush=%ld FillRect=%ld GetSysColor=%ld GetSysColorBrush=%ld ShadowSkip=%ld DupSkip=%ld GdiDup=%ld\n",
+                Log("=== v5.6 unloaded cleanly. CairoRgb=%ld CairoRgba=%ld SetTextColor=%ld SetBkColor=%ld CreateSolidBrush=%ld FillRect=%ld GetSysColor=%ld GetSysColorBrush=%ld ShadowSkip=%ld DupSkip=%ld GdiDup=%ld\n",
                     nCairoRgb, nCairoRgba, nSetTextColor, nSetBkColor, nCreateSolidBrush, nFillRect, nGetSysColor, nGetSysColorBrush, nShadowSkip, nDupSkip, nGdiDup);
                 fclose(g_log);
                 g_log = NULL;

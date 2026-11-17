@@ -1,13 +1,14 @@
 # 1C Theme Engine — Список задач (на 2026-07-24)
 
 ## Статус
-Тема **v5.5** (`builds/ThemeHook3_v55.dll`) — актуальная рабочая версия (= v5.4 + экспорты VerifierDllInitialize/Uninitialize для архивного IFEO-эксперимента; хуки идентичны v5.4). Живая проверка полного цикла 2026-07-24: автоинжекция watcher'ом → тёмная чёткая (`verify_dark_v55_repaint.png`) → выгрузка → светлая идеально чистая (`verify_light_unloaded.png`) → повторная инжекция.
+Актуальная линия — **v5.6**: `builds/ThemeHook3_v56.dll` (x86) и `builds/ThemeHook3_v56_x64.dll`. `ThemeHook3_v55.dll` — x86-артефакт эксперимента (= v5.4 + экспорты VerifierDllInitialize/Uninitialize); в цикле не используется. Живая проверка v5.5 2026-07-24: автоинжекция watcher'ом → тёмная чёткая (`verify_dark_v55_repaint.png`) → выгрузка → светлая идеально чистая (`verify_light_unloaded.png`).
 
 Что нового в линейке v5:
 - **v5.0** — EAT-патч провайдеров (cairo/gdi32/user32): поздно загружаемые модули получают хуки мгновенно, без ожидания RescanThread. Лог: все 19 хуков `EAT 1`. IAT-патч и re-scan оставлены страховкой.
 - **v5.1** — pale-tint fix: цвета с min каналом > 0.55 — это фоны, а не акценты → жёлтая шапка F1 стала тёмной (гипотеза D подтверждена: дырка в карте, не кэш).
 - **v5.2–5.3** — детект дублирующих пар через per-thread ring history (256 записей для cairo-глифов, 128 для GDI): emboss-тень и синтетический bold пропускаются (пары не смежны — нужна история).
 - **v5.4** — ⚠️ ЖЁСТКИЙ УРОК: любая дорисовка/запись пикселей попадает в кэшированные surface и отравляет процесс навсегда (двоение переживало даже полную выгрузку; у v5.1 было 3477 deferred redraw). Режим **SKIP-ONLY**: deferred redraw и surf-remap удалены; незамапленный тёмный текст просто перекрашивается в #D0D0D0 (безопасно).
+- **v5.6** — две DLL из одного исходника. На x64 EAT идёт через стаб, watcher выбирает DLL по битности и больше не инжектит по таймауту без окна. Run и IFEO этой поставкой не ставятся.
 - **v5.5** — ⚠️ ЖЁСТКИЙ УРОК №2 (2026-07-24): **ранняя инжекция отравляет кэши**. Watcher с SETTLE_SEC=4 инжектил тему в стартующий процесс — хуки перекрашивали текст в момент построения стартовых кэшей отрисовки 1С, перекрашенные emboss-прогоны запеклись, двоение переживало полную выгрузку DLL (`diag_light_now.png` vs чистый `unloaded.png` от 21.07). SKIP-ONLY недостаточен: хуки не должны работать **в момент создания кэша**. Исключены как причины: код v5.5 (инжекция оригинального v5.4 в тот же процесс дала то же двоение), обновление платформы (8.5.1.1302 та же), двойная инжекция. Фикс: watcher ждёт видимое окно «Конфигуратор» + 25 с, fallback — 300 с вслепую. Проверено: `verify_dark_v55_repaint.png` (тёмная чёткая), `verify_light_unloaded.png` (светлая после выгрузки чистая).
 
 **Watcher-автоинжекция работает** (2026-07-24): `tools/theme_watcher.py` следит за 1cv8.exe и применяет тему автоматически. Автозапуск: `tools/watcher_install.bat` (HKCU Run). ⚠️ Решение владельца (2026-07-25): **никакой автозагрузки**, watcher запускается только вручную по требованию.
@@ -32,7 +33,7 @@
 - [ ] GUI менеджера профилей (C# WPF) — фаза 2.
 
 ## Технические заметки
-- 1cv8.exe — 32-битный; DLL x86 (build/build_v3.bat, MSVC 2022 Community).
+- Конфигуратор `1cv8.exe` бывает x86 (WOW64) и x64. Линия v56: `ThemeHook3_v56.dll` и `ThemeHook3_v56_x64.dll`.
 - Рендер UI — Cairo (grphcs.dll, WebKit.dll): хуки cairo_set_source_rgb/rgba, cairo_show_glyphs/text; GDI: SetTextColor/SetBkColor/CreateSolidBrush/FillRect/DrawTextW/DrawTextExW; GetSysColor(Brush) — ролевой маппинг.
 - EAT-патч: патчится AddressOfFunctions в таблице экспорта cairo.dll/gdi32.dll/user32.dll; откат через общий журнал патчей (IAT+EAT restore при DETACH).
 - Ring history (v5.3+): cairo — 256 записей/поток (8 индексов глифов + x,y + цвет); GDI — 128 записей/поток (текст до 63 WCHAR + x,y + цвет). Сдвиг пары: 0.25–3px (cairo), 1–4px (GDI); same-position repaint (сдвиг 0) никогда не пропускается.
@@ -41,8 +42,8 @@
 - PaletteLog.dll тоже с IAT-restore — выгрузка не роняет процесс.
 
 ## Ключевые файлы
-- `src/ThemeHook3.cpp` / `builds/ThemeHook3_v55.dll` — актуальная тема (**v5.5**)
-- `builds/ThemeHook3_v50…v55.dll`, `build/build_v50…v55.bat` — версионные сборки
+- `src/ThemeHook3.cpp`, `builds/ThemeHook3_v56.dll`, `builds/ThemeHook3_v56_x64.dll` — актуальная линия (**v5.6**, x86 и x64). `ThemeHook3_v55.dll` — x86-артефакт эксперимента, в цикле не используется.
+- `builds/ThemeHook3_v50…v55.dll`, `build/build_v50…v55.bat` — журнал эксперимента
 - `tools/theme_watcher.py` — автоинжекция (ждёт окно «Конфигуратор» + 25 с)
 - `tools/inject.py`, `tools/unload.py`, `tools/screenshot.py`, `builds/PaletteLog.dll`
 - `logs/palette_dump.txt` — собранные цвета 1С (включая лексемы кода и цвета справки)
